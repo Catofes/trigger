@@ -19,9 +19,10 @@ func main() {
 	if url == nil || command == nil {
 		log.Fatal("Wrong input.")
 	}
+	t := time.Now()
 	for {
 		ctx, cancel := context.WithCancel(context.Background())
-		requestURL := fmt.Sprintf("%s/wait/%d", *url, time.Now().Unix())
+		requestURL := fmt.Sprintf("%s/wait/%d", *url, t.Unix())
 		request, err := http.NewRequestWithContext(ctx, "GET", requestURL, nil)
 		if err != nil {
 			log.Fatal(err)
@@ -36,6 +37,7 @@ func main() {
 			log.Println("Timeout, restart.")
 		case response := <-done:
 			if response.StatusCode == http.StatusOK {
+				t = time.Now()
 				log.Println("Update, execute command.")
 				command := strings.Split(*command, " ")
 				var cmd *exec.Cmd
@@ -44,7 +46,7 @@ func main() {
 				} else {
 					cmd = exec.Command(command[0], command[1:]...)
 				}
-				log.Printf("Excuting command : %s.", cmd.Path)
+				log.Printf("Excuting command : %s %s.", cmd.Path, strings.Join(cmd.Args, " "))
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					log.Fatalf("err: %s\nout: %s\n", err, out)
