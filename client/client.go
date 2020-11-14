@@ -16,6 +16,9 @@ func main() {
 	command := flag.String("e", "", "Command.")
 	timeout := flag.Int64("t", 3600, "Timeout")
 	flag.Parse()
+	if url == nil || command == nil {
+		log.Fatal("Wrong input.")
+	}
 	for {
 		ctx, cancel := context.WithCancel(context.Background())
 		requestURL := fmt.Sprintf("%s/wait/%d", *url, time.Now().Unix())
