@@ -47,12 +47,12 @@ func main() {
 				log.Printf("Excuting command : %s.", cmd.Path)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
-					log.Fatal(err)
+					log.Fatalf("err: %s\nout: %s\n", err, out)
 				} else {
 					log.Printf("Excuted, result:\n %s", string(out))
 				}
 			} else if response.StatusCode == http.StatusNoContent {
-				log.Println("Connect logs, restart.")
+				log.Println("Connect lost, restart.")
 			}
 		}
 		cancel()
