@@ -36,7 +36,9 @@ func main() {
 		case <-time.After(time.Duration(*timeout) * time.Second):
 			log.Println("Timeout, restart.")
 		case response := <-done:
-			if response.StatusCode == http.StatusOK {
+			if response == nil {
+				log.Println("Get empty respone, restart.")
+			} else if response.StatusCode == http.StatusOK {
 				t = time.Now()
 				log.Println("Update, execute command.")
 				command := strings.Split(*command, " ")
